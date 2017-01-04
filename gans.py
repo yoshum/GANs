@@ -106,7 +106,7 @@ class GANs:
             print("    Generator loss in a epoch     :", gen_epochloss)
             print("", flush=True)
             if (epoch%5 == 0) and (report is not None) and (z_test is not None):
-                report(self.generator, epoch, z_test)
+                report(self.generator, self.discriminator, epoch, z_test)
 
     def sample_z(self, n_samples):
         return np.random.uniform(-1, 1, (n_samples, self.dim_z)).astype(np.float32)
@@ -117,14 +117,14 @@ def make_dataset():
     train, test = datasets.get_mnist(withlabel=False)
     return np.vstack((train, test,))
 
-def update_net(loss, optimizer, arg1, arg2):
-    loss.cleargrads()
-    batchloss = loss(arg1, arg2)
-    batchloss.backward()
-    optimizer.update()
-    return batchloss
+# def update_net(loss, optimizer, arg1, arg2):
+#    loss.cleargrads()
+#    batchloss = loss(arg1, arg2)
+#    batchloss.backward()
+#    optimizer.update()
+#    return batchloss
 
-def save_digits(generator, epoch, z_test):
+def save_digits(generator, discriminator, epoch, z_test):
     fig = plt.figure()
     samples = generator(z_test).data
     samples = [
